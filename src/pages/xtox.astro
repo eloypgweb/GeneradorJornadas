@@ -1,0 +1,433 @@
+---
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>X to X | Conversor</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;600;700;800&display=swap"
+			rel="stylesheet"
+		/>
+		<style>
+			:root {
+				--paper: #fcf8ed;
+				--ink: #11202f;
+				--accent: #df5b1c;
+				--accent-dark: #a74114;
+				--panel: rgba(255, 255, 255, 0.9);
+				--shadow: 0 14px 35px rgba(9, 25, 36, 0.22);
+			}
+
+			* {
+				box-sizing: border-box;
+			}
+
+			body {
+				margin: 0;
+				font-family: "Manrope", "Segoe UI", sans-serif;
+				color: var(--ink);
+				background:
+					radial-gradient(circle at 8% 15%, #fff2cb 0%, rgba(255, 242, 203, 0) 35%),
+					radial-gradient(circle at 95% 10%, #ffd6c2 0%, rgba(255, 214, 194, 0) 38%),
+					linear-gradient(160deg, #f9efe3, #f6dfcb);
+				min-height: 100vh;
+			}
+
+			.wrapper {
+				width: min(1150px, 92vw);
+				margin: 1.2rem auto 2.2rem;
+				display: grid;
+				gap: 1.2rem;
+			}
+
+			.title {
+				margin: 0;
+				font-family: "Bebas Neue", Impact, sans-serif;
+				font-size: clamp(2.1rem, 8vw, 4rem);
+				letter-spacing: 0.05em;
+				line-height: 0.92;
+			}
+
+			.subtitle {
+				margin: 0;
+				opacity: 0.8;
+				font-size: 0.97rem;
+			}
+
+			.controls,
+			.preview {
+				background: var(--panel);
+				border-radius: 18px;
+				padding: 1rem;
+				box-shadow: var(--shadow);
+				backdrop-filter: blur(4px);
+			}
+
+			.controls {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+				gap: 0.85rem;
+			}
+
+			.field {
+				display: grid;
+				gap: 0.45rem;
+			}
+
+			label {
+				font-size: 0.85rem;
+				font-weight: 700;
+				letter-spacing: 0.03em;
+				text-transform: uppercase;
+			}
+
+			input[type="file"],
+			select,
+			input[type="range"] {
+				width: 100%;
+				border: 1px solid #c8baa9;
+				border-radius: 10px;
+				padding: 0.55rem 0.6rem;
+				background: #fffdf9;
+				font: inherit;
+			}
+
+			input[type="file"] {
+				cursor: pointer;
+			}
+
+			input[type="file"]::file-selector-button,
+			input[type="file"]::-webkit-file-upload-button {
+				border: 0;
+				border-radius: 8px;
+				padding: 0.5rem 0.72rem;
+				margin-right: 0.65rem;
+				font: inherit;
+				font-weight: 800;
+				color: #fff;
+				background: linear-gradient(130deg, var(--accent), var(--accent-dark));
+				cursor: pointer;
+			}
+
+			button {
+				appearance: none;
+				border: 0;
+				border-radius: 12px;
+				padding: 0.85rem 1rem;
+				font-family: "Manrope", "Segoe UI", sans-serif;
+				font-size: 0.98rem;
+				font-weight: 800;
+				background: linear-gradient(130deg, var(--accent), var(--accent-dark));
+				color: #fff;
+				cursor: pointer;
+			}
+
+			button:disabled {
+				opacity: 0.6;
+				cursor: not-allowed;
+			}
+
+			.preview {
+				display: grid;
+				gap: 0.6rem;
+			}
+
+			.preview-box {
+				display: grid;
+				place-items: center;
+				min-height: 200px;
+				border: 1px solid rgba(17, 32, 47, 0.18);
+				border-radius: 12px;
+				background: rgba(255, 255, 255, 0.66);
+				overflow: hidden;
+			}
+
+			.preview-box img {
+				max-width: 100%;
+				max-height: 340px;
+				display: block;
+			}
+
+			.meta {
+				margin: 0;
+				font-size: 0.86rem;
+				opacity: 0.82;
+			}
+		</style>
+	</head>
+	<body>
+		<Navbar active="xtox" />
+		<main class="wrapper">
+			<header>
+				<h1 class="title">X to X</h1>
+				<p class="subtitle">Convierte tus archivos entre PNG, JPG, WEBP, SVG e ICO.</p>
+			</header>
+
+			<section class="controls">
+				<div class="field">
+					<label for="sourceFile">Archivo de entrada</label>
+					<input id="sourceFile" type="file" accept=".png,.jpg,.jpeg,.webp,.svg,.ico,image/*" />
+				</div>
+				<div class="field">
+					<label for="targetFormat">Formato de salida</label>
+					<select id="targetFormat">
+						<option value="png">PNG</option>
+						<option value="jpg">JPG</option>
+						<option value="webp">WEBP</option>
+						<option value="svg">SVG</option>
+						<option value="ico">ICO</option>
+					</select>
+				</div>
+				<div class="field">
+					<label for="quality">Calidad JPG/WEBP</label>
+					<input id="quality" type="range" min="70" max="100" step="1" value="92" />
+					<p class="meta" id="qualityLabel">Calidad: 92%</p>
+				</div>
+				<div class="field">
+					<label for="downloadBtn">Accion</label>
+					<button id="downloadBtn" type="button">Convertir y descargar</button>
+				</div>
+			</section>
+
+			<section class="preview">
+				<div class="preview-box" id="previewBox">
+					<p class="meta" id="previewPlaceholder">Sin archivo cargado.</p>
+				</div>
+				<p class="meta" id="status">Estado: esperando archivo.</p>
+			</section>
+		</main>
+		<Footer />
+
+		<script>
+			// @ts-nocheck
+			const sourceFileInput = document.getElementById("sourceFile");
+			const targetFormatInput = document.getElementById("targetFormat");
+			const qualityInput = document.getElementById("quality");
+			const qualityLabel = document.getElementById("qualityLabel");
+			const downloadBtn = document.getElementById("downloadBtn");
+			const previewBox = document.getElementById("previewBox");
+			const status = document.getElementById("status");
+
+			const state = {
+				file: null,
+				nameBase: "archivo",
+				sourceExt: "",
+				sourceDataUrl: "",
+				image: null,
+			};
+
+			function getExtension(filename) {
+				const dot = filename.lastIndexOf(".");
+				if (dot === -1) return "";
+				return filename.slice(dot + 1).toLowerCase();
+			}
+
+			function removeExtension(filename) {
+				const dot = filename.lastIndexOf(".");
+				if (dot === -1) return filename;
+				return filename.slice(0, dot);
+			}
+
+			function fileToDataUrl(file) {
+				return new Promise((resolve, reject) => {
+					const reader = new FileReader();
+					reader.onload = () => resolve(String(reader.result));
+					reader.onerror = reject;
+					reader.readAsDataURL(file);
+				});
+			}
+
+			function dataUrlToImage(dataUrl) {
+				return new Promise((resolve, reject) => {
+					const image = new Image();
+					image.onload = () => resolve(image);
+					image.onerror = reject;
+					image.src = dataUrl;
+				});
+			}
+
+			function updatePreview() {
+				previewBox.innerHTML = "";
+				if (!state.sourceDataUrl) {
+					const p = document.createElement("p");
+					p.className = "meta";
+					p.textContent = "Sin archivo cargado.";
+					previewBox.appendChild(p);
+					return;
+				}
+				if (state.sourceExt === "svg" || state.image) {
+					const img = document.createElement("img");
+					img.src = state.sourceDataUrl;
+					img.alt = "Preview";
+					previewBox.appendChild(img);
+					return;
+				}
+				const p = document.createElement("p");
+				p.className = "meta";
+				p.textContent = "Formato cargado sin preview directa en navegador.";
+				previewBox.appendChild(p);
+			}
+
+			function setStatus(text) {
+				status.textContent = text;
+			}
+
+			function mimeForFormat(format) {
+				if (format === "png") return "image/png";
+				if (format === "jpg") return "image/jpeg";
+				if (format === "webp") return "image/webp";
+				if (format === "svg") return "image/svg+xml";
+				if (format === "ico") return "image/x-icon";
+				return "application/octet-stream";
+			}
+
+			function triggerDownload(blob, filename) {
+				const link = document.createElement("a");
+				link.download = filename;
+				link.href = URL.createObjectURL(blob);
+				link.click();
+				URL.revokeObjectURL(link.href);
+			}
+
+			function writeUint16LE(arr, index, value) {
+				arr[index] = value & 255;
+				arr[index + 1] = (value >> 8) & 255;
+			}
+
+			function writeUint32LE(arr, index, value) {
+				arr[index] = value & 255;
+				arr[index + 1] = (value >> 8) & 255;
+				arr[index + 2] = (value >> 16) & 255;
+				arr[index + 3] = (value >> 24) & 255;
+			}
+
+			async function pngBlobToIcoBlob(pngBlob, width, height) {
+				const pngBytes = new Uint8Array(await pngBlob.arrayBuffer());
+				const header = new Uint8Array(22);
+				writeUint16LE(header, 0, 0);
+				writeUint16LE(header, 2, 1);
+				writeUint16LE(header, 4, 1);
+				header[6] = width >= 256 ? 0 : width;
+				header[7] = height >= 256 ? 0 : height;
+				header[8] = 0;
+				header[9] = 0;
+				writeUint16LE(header, 10, 1);
+				writeUint16LE(header, 12, 32);
+				writeUint32LE(header, 14, pngBytes.length);
+				writeUint32LE(header, 18, 22);
+
+				const output = new Uint8Array(header.length + pngBytes.length);
+				output.set(header, 0);
+				output.set(pngBytes, header.length);
+				return new Blob([output], { type: "image/x-icon" });
+			}
+
+			async function convertToSvgBlob() {
+				const width = state.image?.width || 1024;
+				const height = state.image?.height || 1024;
+				const escapedHref = state.sourceDataUrl.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+				const svg = `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">\n  <image href="${escapedHref}" width="${width}" height="${height}" />\n</svg>`;
+				return new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
+			}
+
+			async function convertAndDownload() {
+				if (!state.file) {
+					window.alert("Sube un archivo primero.");
+					return;
+				}
+
+				const target = targetFormatInput.value;
+				downloadBtn.disabled = true;
+				downloadBtn.textContent = "Convirtiendo...";
+
+				try {
+					if (target === "svg") {
+						const svgBlob = await convertToSvgBlob();
+						triggerDownload(svgBlob, `${state.nameBase}.svg`);
+						setStatus("Estado: conversion completada (SVG).");
+						return;
+					}
+
+					if (!state.image) {
+						window.alert("Este archivo no se puede rasterizar en el navegador para ese formato de salida.");
+						return;
+					}
+
+					const canvas = document.createElement("canvas");
+					canvas.width = state.image.width;
+					canvas.height = state.image.height;
+					const ctx = canvas.getContext("2d");
+					ctx.drawImage(state.image, 0, 0, canvas.width, canvas.height);
+
+					if (target === "ico") {
+						const pngBlob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+						if (!pngBlob) throw new Error("No se pudo generar PNG intermedio para ICO.");
+						const icoBlob = await pngBlobToIcoBlob(pngBlob, canvas.width, canvas.height);
+						triggerDownload(icoBlob, `${state.nameBase}.ico`);
+						setStatus("Estado: conversion completada (ICO).");
+						return;
+					}
+
+					const quality = Number(qualityInput.value) / 100;
+					const mime = mimeForFormat(target);
+					const blob = await new Promise((resolve) => {
+						if (target === "jpg" || target === "webp") {
+							canvas.toBlob(resolve, mime, quality);
+							return;
+						}
+						canvas.toBlob(resolve, mime);
+					});
+
+					if (!blob) throw new Error("No se pudo generar el archivo convertido.");
+					triggerDownload(blob, `${state.nameBase}.${target}`);
+					setStatus(`Estado: conversion completada (${target.toUpperCase()}).`);
+				} catch (error) {
+					window.alert("No se pudo convertir el archivo.");
+					setStatus("Estado: error al convertir archivo.");
+				} finally {
+					downloadBtn.disabled = false;
+					downloadBtn.textContent = "Convertir y descargar";
+				}
+			}
+
+			sourceFileInput.addEventListener("change", async (event) => {
+				const [file] = event.target.files;
+				if (!file) return;
+
+				state.file = file;
+				state.nameBase = removeExtension(file.name) || "archivo";
+				state.sourceExt = getExtension(file.name);
+				state.image = null;
+				setStatus("Estado: leyendo archivo...");
+
+				try {
+					state.sourceDataUrl = await fileToDataUrl(file);
+					try {
+						state.image = await dataUrlToImage(state.sourceDataUrl);
+					} catch {
+						state.image = null;
+					}
+					updatePreview();
+					setStatus(`Estado: archivo cargado (${state.sourceExt || "desconocido"}).`);
+				} catch {
+					setStatus("Estado: no se pudo leer el archivo.");
+				}
+			});
+
+			qualityInput.addEventListener("input", (event) => {
+				qualityLabel.textContent = `Calidad: ${event.target.value}%`;
+			});
+
+			downloadBtn.addEventListener("click", convertAndDownload);
+		</script>
+	</body>
+</html>
