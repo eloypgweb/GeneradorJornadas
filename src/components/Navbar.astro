@@ -3,6 +3,7 @@ const { active = "generator" } = Astro.props;
 const generatorActive = active === "generator";
 const cropActive = active === "crop";
 const xtoxActive = active === "xtox";
+const youtubeActive = active === "youtube";
 ---
 
 <nav class="navbar" aria-label="Navegacion principal">
@@ -41,6 +42,9 @@ const xtoxActive = active === "xtox";
 		</a>
 		<a href="/xtox" aria-current={xtoxActive ? "page" : undefined} class={xtoxActive ? "link active" : "link"}>
 			X to X
+		</a>
+		<a href="/youtube" aria-current={youtubeActive ? "page" : undefined} class={youtubeActive ? "link active" : "link"}>
+			YouTube
 		</a>
 	</div>
 </nav>

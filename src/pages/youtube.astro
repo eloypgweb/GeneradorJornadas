@@ -1,0 +1,328 @@
+---
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content="Convierte enlaces de YouTube a MP3 o MP4 con la calidad que elijas." />
+		<title>YouTube a MP3 y MP4</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;600;700;800&display=swap"
+			rel="stylesheet"
+		/>
+		<style>
+			:root {
+				--ink: #11202f;
+				--muted: #637180;
+				--orange: #df5b1c;
+				--orange-dark: #a74114;
+				--panel: rgba(255, 255, 255, 0.91);
+				--line: #d7cfc4;
+				--shadow: 0 18px 42px rgba(9, 25, 36, 0.18);
+			}
+
+			* { box-sizing: border-box; }
+
+			body {
+				margin: 0;
+				font-family: "Manrope", "Segoe UI", sans-serif;
+				color: var(--ink);
+				background:
+					radial-gradient(circle at 10% 12%, #fff1c6 0, rgba(255, 241, 198, 0) 31%),
+					radial-gradient(circle at 93% 18%, #ffd1b9 0, rgba(255, 209, 185, 0) 33%),
+					linear-gradient(155deg, #faf0e3, #f4dccb);
+				min-height: 100vh;
+			}
+
+			.wrapper {
+				width: min(1150px, 92vw);
+				margin: 1.4rem auto 2.4rem;
+				display: grid;
+				gap: 1.2rem;
+			}
+
+			.hero {
+				display: grid;
+				grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.65fr);
+				gap: 1.2rem;
+				align-items: end;
+			}
+
+			.eyebrow {
+				margin: 0 0 0.45rem;
+				color: var(--orange-dark);
+				font-size: 0.78rem;
+				font-weight: 800;
+				letter-spacing: 0.14em;
+				text-transform: uppercase;
+			}
+
+			.title {
+				margin: 0;
+				font-family: "Bebas Neue", Impact, sans-serif;
+				font-size: clamp(3rem, 9vw, 6rem);
+				letter-spacing: 0.04em;
+				line-height: 0.86;
+			}
+
+			.subtitle {
+				max-width: 620px;
+				margin: 0.8rem 0 0;
+				font-size: 1rem;
+				line-height: 1.6;
+				color: #43515d;
+			}
+
+			.badge {
+				justify-self: end;
+				padding: 0.85rem 1rem;
+				border-left: 4px solid var(--orange);
+				background: rgba(255, 255, 255, 0.55);
+				font-size: 0.84rem;
+				line-height: 1.5;
+			}
+
+			.badge strong { display: block; font-size: 1rem; }
+
+			.converter {
+				display: grid;
+				grid-template-columns: minmax(0, 1.25fr) minmax(270px, 0.75fr);
+				gap: 1.2rem;
+				padding: clamp(1rem, 3vw, 1.7rem);
+				border-radius: 20px;
+				background: var(--panel);
+				box-shadow: var(--shadow);
+				backdrop-filter: blur(5px);
+			}
+
+			.input-panel, .options-panel { display: grid; gap: 1rem; align-content: start; }
+			.options-panel { padding-left: 1.2rem; border-left: 1px solid var(--line); }
+
+			.section-title { margin: 0; font-size: 1.25rem; }
+			.section-copy { margin: -0.65rem 0 0; color: var(--muted); font-size: 0.87rem; line-height: 1.5; }
+
+			.field { display: grid; gap: 0.45rem; }
+			label { font-size: 0.78rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+
+			.url-row { display: grid; grid-template-columns: 1fr auto; gap: 0.6rem; }
+			input, select, button { font: inherit; }
+			input[type="url"], select {
+				width: 100%;
+				min-height: 48px;
+				padding: 0.7rem 0.8rem;
+				border: 1px solid var(--line);
+				border-radius: 10px;
+				background: #fffdf9;
+				color: var(--ink);
+			}
+
+			input[type="url"]:focus, select:focus { outline: 3px solid rgba(223, 91, 28, 0.18); border-color: var(--orange); }
+
+			button {
+				min-height: 48px;
+				padding: 0.7rem 1.1rem;
+				border: 0;
+				border-radius: 10px;
+				background: linear-gradient(130deg, var(--orange), var(--orange-dark));
+				color: #fff;
+				font-weight: 800;
+				cursor: pointer;
+				transition: transform 150ms ease, filter 150ms ease;
+			}
+
+			button:hover { transform: translateY(-1px); filter: brightness(1.06); }
+			button:disabled { cursor: not-allowed; opacity: 0.65; transform: none; }
+
+			.format-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
+			.format-option { position: relative; }
+			.format-option input { position: absolute; opacity: 0; pointer-events: none; }
+			.format-option label {
+				display: grid;
+				gap: 0.2rem;
+				padding: 0.8rem;
+				border: 1px solid var(--line);
+				border-radius: 10px;
+				background: #fffdf9;
+				cursor: pointer;
+				letter-spacing: 0;
+				text-transform: none;
+			}
+			.format-option label strong { font-size: 1.05rem; }
+			.format-option label span { color: var(--muted); font-size: 0.75rem; font-weight: 600; }
+			.format-option input:checked + label { border-color: var(--orange); background: #fff0e8; box-shadow: inset 0 0 0 1px var(--orange); }
+
+			.quality-note { margin: -0.45rem 0 0; color: var(--muted); font-size: 0.76rem; }
+			.status { min-height: 1.35rem; margin: 0; font-size: 0.84rem; color: var(--muted); }
+			.status.error { color: #a52d21; }
+			.status.ready { color: #246947; }
+
+			.legal {
+				margin: 0;
+				padding-top: 0.8rem;
+				border-top: 1px solid var(--line);
+				color: var(--muted);
+				font-size: 0.74rem;
+				line-height: 1.5;
+			}
+
+			.steps {
+				display: grid;
+				grid-template-columns: repeat(3, 1fr);
+				gap: 0.9rem;
+			}
+			.step { padding: 1rem; border-top: 3px solid var(--orange); background: rgba(255, 255, 255, 0.48); }
+			.step-number { color: var(--orange-dark); font-size: 0.75rem; font-weight: 800; letter-spacing: 0.1em; }
+			.step h2 { margin: 0.35rem 0; font-size: 1rem; }
+			.step p { margin: 0; color: var(--muted); font-size: 0.82rem; line-height: 1.5; }
+
+			.fade-in { opacity: 0; transform: translateY(14px); animation: fadeUp 450ms ease forwards; }
+			.delay { animation-delay: 100ms; }
+			.delay-more { animation-delay: 180ms; }
+			@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+			@media (max-width: 760px) {
+				.hero, .converter { grid-template-columns: 1fr; }
+				.badge { justify-self: stretch; }
+				.options-panel { padding: 1rem 0 0; border-top: 1px solid var(--line); border-left: 0; }
+				.steps { grid-template-columns: 1fr; }
+			}
+
+			@media (max-width: 480px) {
+				.url-row { grid-template-columns: 1fr; }
+				.title { font-size: 3.3rem; }
+			}
+		</style>
+	</head>
+	<body>
+		<Navbar active="youtube" />
+		<main class="wrapper">
+			<section class="hero fade-in">
+				<div>
+					<p class="eyebrow">Herramienta audiovisual</p>
+					<h1 class="title">YouTube a MP3<br />o MP4</h1>
+					<p class="subtitle">Pega un enlace, elige el formato y prepara tu descarga con la máxima calidad disponible en el vídeo original.</p>
+				</div>
+				<div class="badge"><strong>Calidad primero</strong>El formato y la resolución final dependen de la fuente original.</div>
+			</section>
+
+			<section class="converter fade-in delay" aria-labelledby="converter-title">
+				<div class="input-panel">
+					<h2 class="section-title" id="converter-title">1. Añade tu enlace</h2>
+					<p class="section-copy">Acepta enlaces normales, cortos y enlaces de YouTube Music.</p>
+					<div class="field">
+						<label for="youtubeUrl">Enlace de YouTube</label>
+						<div class="url-row">
+							<input id="youtubeUrl" type="url" placeholder="https://www.youtube.com/watch?v=..." autocomplete="url" />
+							<button id="prepareBtn" type="button">Convertir y descargar</button>
+						</div>
+					</div>
+					<p id="status" class="status" role="status" aria-live="polite">Listo para recibir un enlace.</p>
+					<p class="legal">Usa esta herramienta únicamente con contenido que tengas derecho a descargar. Respeta los derechos de autor y las condiciones de uso de la plataforma.</p>
+				</div>
+
+				<div class="options-panel">
+					<h2 class="section-title">2. Ajusta la salida</h2>
+					<div class="field">
+						<label>Formato</label>
+						<div class="format-grid">
+							<div class="format-option">
+								<input id="formatMp3" name="format" type="radio" value="mp3" checked />
+								<label for="formatMp3"><strong>MP3</strong><span>Solo audio</span></label>
+							</div>
+							<div class="format-option">
+								<input id="formatMp4" name="format" type="radio" value="mp4" />
+								<label for="formatMp4"><strong>MP4</strong><span>Vídeo + audio</span></label>
+							</div>
+						</div>
+					</div>
+					<div class="field">
+						<label for="quality">Calidad</label>
+						<select id="quality">
+							<option value="best">Máxima disponible</option>
+							<option value="320">MP3 320 kbps / MP4 1080p</option>
+							<option value="256">MP3 256 kbps / MP4 720p</option>
+						</select>
+						<p class="quality-note">La opción máxima conserva la mejor calidad que permita el vídeo.</p>
+					</div>
+				</div>
+			</section>
+
+			<section class="steps fade-in delay-more" aria-label="Proceso de conversión">
+				<article class="step"><span class="step-number">01</span><h2>Enlace validado</h2><p>Comprobamos que el enlace pertenece a YouTube antes de continuar.</p></article>
+				<article class="step"><span class="step-number">02</span><h2>Conversión</h2><p>El servidor procesa el formato y la calidad seleccionados.</p></article>
+				<article class="step"><span class="step-number">03</span><h2>Descarga</h2><p>Recibes el archivo final listo para guardar en tu dispositivo.</p></article>
+			</section>
+		</main>
+		<Footer />
+
+		<script>
+			const youtubeUrl = document.querySelector("#youtubeUrl");
+			const prepareBtn = document.querySelector("#prepareBtn");
+			const status = document.querySelector("#status");
+			const quality = document.querySelector("#quality");
+
+			const isYoutubeUrl = (value) => {
+				try {
+					const url = new URL(value);
+					return ["www.youtube.com", "youtube.com", "youtu.be", "music.youtube.com"].includes(url.hostname.toLowerCase());
+				} catch {
+					return false;
+				}
+			};
+
+			prepareBtn?.addEventListener("click", async () => {
+				const value = youtubeUrl?.value.trim() ?? "";
+				const format = document.querySelector('input[name="format"]:checked')?.value ?? "mp3";
+				status?.classList.remove("error", "ready");
+				if (!isYoutubeUrl(value)) {
+					status.textContent = "Introduce un enlace valido de YouTube para continuar.";
+					status.classList.add("error");
+					youtubeUrl?.focus();
+					return;
+				}
+
+				prepareBtn.disabled = true;
+				prepareBtn.textContent = "Convirtiendo...";
+				status.textContent = "Descargando y convirtiendo. Puede tardar unos segundos...";
+
+				try {
+					const response = await fetch("/api/youtube", {
+						method: "POST",
+						headers: { "content-type": "application/json" },
+						body: JSON.stringify({ url: value, format, quality: quality?.value ?? "best" }),
+					});
+
+					if (!response.ok) {
+						const data = await response.json().catch(() => ({}));
+						throw new Error(data.error || "No se pudo completar la conversion.");
+					}
+
+					const blob = await response.blob();
+					const downloadUrl = URL.createObjectURL(blob);
+					const link = document.createElement("a");
+					const disposition = response.headers.get("content-disposition");
+					const filename = disposition?.match(/filename="([^"]+)"/)?.[1] || `youtube.${format}`;
+					link.href = downloadUrl;
+					link.download = filename;
+					link.click();
+					URL.revokeObjectURL(downloadUrl);
+					status.textContent = "Conversion terminada. La descarga deberia haber comenzado.";
+					status.classList.add("ready");
+				} catch (error) {
+					status.textContent = error instanceof Error ? error.message : "No se pudo completar la conversion.";
+					status.classList.add("error");
+				} finally {
+					prepareBtn.disabled = false;
+					prepareBtn.textContent = "Convertir y descargar";
+				}
+			});
+		</script>
+	</body>
+</html>
